@@ -4,8 +4,8 @@ import { container } from "styled-system/patterns";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "ikuma-t.com v2" },
+    { name: "description", content: "移行作業中" },
   ];
 };
 
