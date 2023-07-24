@@ -1,0 +1,11 @@
+export { AWSIcon } from "./aws-icon";
+export { GoIcon } from "./go-icon";
+export { GraphQLIcon } from "./graphql-icon";
+export { JavaScriptIcon } from "./javascript-icon";
+export { MUIIcon } from "./mui-icon";
+export { RailsIcon } from "./rails-icon";
+export { ReactIcon } from "./react-icon";
+export { RubyIcon } from "./ruby-icon";
+export { TailwindIcon } from "./tailwind-icon";
+export { TypeScriptIcon } from "./typescript-icon";
+export { VueIcon } from "./vue-icon";

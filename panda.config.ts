@@ -10,6 +10,7 @@ export default defineConfig({
   include: [
     "./app/routes/**/*.{ts,tsx,js,jsx}",
     "./app/components/**/*.{ts,tsx,js,jsx}",
+    "./app/icons/**/*.{ts,tsx,js,jsx}",
   ],
 
   // Files to exclude
