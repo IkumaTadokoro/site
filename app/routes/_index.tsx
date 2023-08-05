@@ -17,6 +17,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { Link } from "@remix-run/react";
+import { Icons } from "~/components/icons";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -79,6 +80,33 @@ export default function Index() {
             </div>
             <Button variant="outline" asChild>
               <Link to="/technology-stack">
+                View More
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </section>
+          <section className="grid gap-4">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-zinc-800">
+              SNS
+            </h2>
+            <div className="grid gap-4 text-zinc-800 text-sm md:text-md">
+              <p>SNSアカウント一覧です。気軽にフォローしてください！</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-2">
+              <Button variant="default" asChild>
+                <Link to="https://github.com/IkumaTadokoro" target="_blank">
+                  <Icons.gitHub className="mr-2 h-4 w-4" />
+                  GitHub
+                </Link>
+              </Button>
+              <Button variant="default" asChild>
+                <Link to="https://twitter.com/ikumatdkr" target="_blank">
+                  <Icons.x className="mr-2 h-4 w-4" />X
+                </Link>
+              </Button>
+            </div>
+            <Button variant="outline" asChild>
+              <Link to="/sns">
                 View More
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Link>
