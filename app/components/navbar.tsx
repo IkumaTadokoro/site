@@ -22,7 +22,7 @@ import { Newspaper, Presentation, Info } from "lucide-react";
 export default function NavBar() {
   return (
     <header className="shadow-sm">
-      <div className="max-w-full md:max-w-3xl py-3 mx-auto">
+      <div className="max-w-full md:max-w-5xl py-3 mx-auto">
         <ul className="flex justify-between items-center">
           <li>
             <NavigationMenu>
