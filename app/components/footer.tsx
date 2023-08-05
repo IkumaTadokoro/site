@@ -1,27 +1,10 @@
-import { css } from "styled-system/css";
-import { container, grid } from "styled-system/patterns";
-
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      className={grid({
-        borderTop: "1px solid",
-        borderColor: "zinc.100",
-      })}
-    >
-      <div
-        className={container({
-          paddingY: { base: 8 },
-        })}
-      >
-        <p
-          className={css({
-            color: "zinc.500",
-            fontSize: "sm",
-          })}
-        >
+    <footer className="grid border-t border-zinc-100 place-content-center bg-yellow-400">
+      <div className="container py-8">
+        <p className="text-zinc-500 text-xs md:text-sm lg:text-md">
           &copy; Copyright ikuma-t {year}, All rights reserved
         </p>
       </div>

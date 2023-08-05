@@ -1,6 +1,4 @@
 import type { V2_MetaFunction } from "@remix-run/cloudflare";
-import { css } from "styled-system/css";
-import { container, flex, grid, vstack } from "styled-system/patterns";
 import Footer from "~/components/footer";
 import NavBar from "~/components/navbar";
 import {
@@ -26,80 +24,23 @@ export const meta: V2_MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div
-      className={grid({
-        gridTemplateRows: "auto 1fr auto",
-        minHeight: "100vh",
-      })}
-    >
+    <div className="grid grid-rows-[auto,1fr,auto] min-h-screen">
       <NavBar />
-      <div
-        className={container({
-          paddingY: { base: 2, md: 6, lg: 8 },
-          maxWidth: "2xl",
-        })}
-      >
-        <section
-          className={vstack({
-            paddingY: {
-              base: 12,
-              md: 24,
-              lg: 36,
-            },
-          })}
-        >
-          <h2
-            className={css({
-              textStyle: {
-                base: "3xl",
-                md: "4xl",
-                lg: "5xl",
-              },
-              fontWeight: "bold",
-              color: "zinc.800",
-            })}
-          >
+      <div className="container max-w-2xl px-4 py-8 md:py-12 lg:py-16">
+        <section className="grid place-content-center place-items-center gap-y-2 my-20">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-800">
             Hi 👋! I'm ikuma-t.
           </h2>
-          <p
-            className={css({
-              textStyle: "sm",
-              color: "zinc.600",
-            })}
-          >
+          <p className="text-zinc-400 text-sm md:text-base lg:text-lg">
             Tabun... Frontend Engineer
           </p>
         </section>
-        <div className={grid({ gap: 12 })}>
-          <section className={grid({ gap: 4 })}>
-            <h2
-              className={css({
-                textStyle: {
-                  base: "2xl",
-                  lg: "3xl",
-                },
-                fontWeight: "bold",
-                color: "zinc.800",
-              })}
-            >
-              <span
-                className={css({
-                  borderBottom: "3px dotted",
-                  borderColor: "zinc.300",
-                })}
-              >
-                About me
-              </span>
+        <div className="grid gap-12">
+          <section className="grid gap-4">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-zinc-800">
+              <span className="border-b border-zinc-300">About me</span>
             </h2>
-            <div
-              className={grid({
-                color: "zinc.800",
-                lineHeight: "tall",
-                fontWeight: 500,
-                fontSize: "md",
-                gap: 4,
-              })}
-            >
+            <div className="grid gap-4 text-zinc-800 text-xs md:text-sm lg:text-md">
               <p>
                 都内のFintechスタートアップで働くプログラマです。最近興味があるのは刺繍で、自分でハンカチに動物とか縫えたらいいなと思っています。
               </p>
@@ -108,42 +49,12 @@ export default function Index() {
               </p>
             </div>
           </section>
-          <section className={grid({ gap: 4 })}>
-            <h2
-              className={css({
-                textStyle: {
-                  base: "2xl",
-                  lg: "3xl",
-                },
-                fontWeight: "bold",
-                color: "zinc.800",
-              })}
-            >
-              <span
-                className={css({
-                  borderBottom: "3px dotted",
-                  borderColor: "zinc.300",
-                })}
-              >
-                Technology Stack
-              </span>
+          <section className="grid gap-4">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-zinc-800">
+              <span className="border-b border-zinc-300">Technology Stack</span>
             </h2>
-            <div
-              className={grid({
-                color: "zinc.800",
-                lineHeight: "tall",
-                fontWeight: 500,
-                fontSize: "md",
-                gap: 4,
-              })}
-            >
-              <div
-                className={flex({
-                  gap: 2,
-                  alignItems: "end",
-                  flexWrap: "wrap",
-                })}
-              >
+            <div className="grid gap-4 text-zinc-800 text-xs md:text-sm lg:text-md">
+              <div className="flex gap-2 align-bottom flex-wrap">
                 <TypeScriptIcon />
                 <JavaScriptIcon />
                 <ReactIcon />
@@ -158,49 +69,20 @@ export default function Index() {
               </div>
             </div>
           </section>
-          <section className={grid({ gap: 4 })}>
-            <h2
-              className={css({
-                textStyle: {
-                  base: "2xl",
-                  lg: "3xl",
-                },
-                fontWeight: "bold",
-                color: "zinc.800",
-              })}
-            >
-              <span
-                className={css({
-                  borderBottom: "3px dotted",
-                  borderColor: "zinc.300",
-                })}
-              >
+          <section className="grid gap-4">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-zinc-800">
+              <span className="border-b border-dotted border-zinc-300">
                 Links
               </span>
             </h2>
-            <div
-              className={grid({
-                color: "zinc.500",
-                fontWeight: 500,
-                fontSize: "lg",
-              })}
-            >
-              <ul
-                className={css({
-                  listStyle: "disc",
-                  listStylePosition: "inside",
-                })}
-              >
+            <div className="grid gap-4 text-zinc-800 text-xs md:text-sm lg:text-md">
+              <ul className="list-disc list-inside">
                 <li>
                   <a
                     href="https://twitter.com/ikumatdkr"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={css({
-                      _hover: {
-                        color: "zinc.700",
-                      },
-                    })}
+                    className="hover:opacity-80"
                   >
                     X
                   </a>
@@ -210,11 +92,7 @@ export default function Index() {
                     href="https://github.com/IkumaTadokoro"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={css({
-                      _hover: {
-                        color: "zinc.700",
-                      },
-                    })}
+                    className="hover:opacity-80"
                   >
                     GitHub
                   </a>
@@ -224,11 +102,7 @@ export default function Index() {
                     href="https://bento.me/ikuma"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={css({
-                      _hover: {
-                        color: "zinc.700",
-                      },
-                    })}
+                    className="hover:opacity-80"
                   >
                     bento
                   </a>
