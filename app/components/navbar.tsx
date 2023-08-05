@@ -8,14 +8,21 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { forwardRef } from "react";
 import { cn } from "~/lib/utils";
 import { Link } from "@remix-run/react";
+import { Newspaper, Presentation, Info } from "lucide-react";
 
 export default function NavBar() {
   return (
     <header className="shadow-sm">
-      <div className="container max-w-5xl py-3">
+      <div className="max-w-full md:max-w-3xl py-3 mx-auto">
         <ul className="flex justify-between items-center">
           <li>
             <NavigationMenu>
@@ -102,30 +109,62 @@ ListItem.displayName = "ListItem";
 
 const Navigation = () => {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link to="/posts">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Blog
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link to="/talks">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Talks
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link to="/docs">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Info
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <TooltipProvider delayDuration={1}>
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <Link to="/posts">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex flex-row gap-2">
+                      <Newspaper className="h-5 w-5" />
+                      <span className="hidden md:inline">Blog</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={20}>
+                    <p>ブログです！</p>
+                  </TooltipContent>
+                </Tooltip>
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link to="/talks">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex flex-row gap-2">
+                      <Presentation className="h-5 w-5" />
+                      <span className="hidden md:inline">Talks</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={20}>
+                    <p>登壇資料です！</p>
+                  </TooltipContent>
+                </Tooltip>
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link to="/docs">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex flex-row gap-2">
+                      <Info className="h-5 w-5" />
+                      <span className="hidden md:inline">Info</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={20}>
+                    <p>個人的なお知らせです！</p>
+                  </TooltipContent>
+                </Tooltip>
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </TooltipProvider>
   );
 };
