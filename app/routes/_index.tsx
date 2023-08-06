@@ -1,4 +1,4 @@
-import type { V2_MetaFunction } from "@remix-run/cloudflare";
+import type { V2_MetaFunction, LoaderArgs } from "@remix-run/cloudflare";
 import {
   ChevronRightCircle,
   ChevronsUpDown,
@@ -7,7 +7,7 @@ import {
   Link2,
   Megaphone,
 } from "lucide-react";
-import { Link } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { Icons } from "~/components/icons";
 import { TypographyMuted } from "~/components/typography";
 import {
@@ -36,6 +36,14 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { createClient } from "newt-client-js";
+import type { Content } from "newt-client-js";
+import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -44,12 +52,45 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
+interface Post extends Content {
+  title: string;
+  body: string;
+  emoji: {
+    type: "emoji";
+    value: string;
+  };
+  category: "tech" | "life" | "idea";
+}
+
+export const loader = async ({ context }: LoaderArgs) => {
+  const client = createClient({
+    spaceUid: context.env.NEWT_SPACE_UID,
+    token: context.env.NEWT_CDN_API_TOKEN,
+    apiType: "cdn",
+    adapter: fetchAdapter,
+  });
+
+  const posts = await client.getFirstContent<Post>({
+    appUid: "ikuma-t",
+    modelUid: "post",
+    query: {
+      body: { fmt: "text" },
+    },
+  });
+
+  return posts;
+};
+
 export default function Index() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const posts = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  if (!posts) {
+    return null;
+  }
 
   return (
     <div>
-      <section className="grid place-content-center place-items-center gap-y-2 my-12 md:my-20">
+      <section className="sm:grid place-content-center place-items-center gap-y-2 my-12 md:my-20 hidden">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-800">
           Hi 👋! I'm ikuma-t.
         </h2>
@@ -60,7 +101,7 @@ export default function Index() {
       <div className="grid gap-4">
         <Alert>
           <Megaphone className="h-6 w-6 stroke-yellow-400 " />
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-x-2">
             <div className="mt-2">
               <AlertTitle>登壇情報</AlertTitle>
               <AlertDescription>
@@ -72,7 +113,7 @@ export default function Index() {
                 to="https://confengine.com/conferences/scrum-fest-sendai-2023/proposal/18657"
                 target="_blank"
               >
-                <ExternalLink className="pt-0.5 w-5 h-5" />
+                <ExternalLink className="w-4 h-4" />
               </Link>
             </Button>
           </div>
@@ -85,23 +126,23 @@ export default function Index() {
                   <AvatarImage src="/ikuma.png" />
                   <AvatarFallback>ikuma-t</AvatarFallback>
                 </Avatar>
-                <h2 className="flex items-center gap-x-3">
+                <h2 className="flex md:items-center flex-col md:flex-row gap-x-3 gap-y-1">
                   ikuma-t
-                  <span className="text-zinc-400 text-sm font-medium">
+                  <span className="text-zinc-400 text-xs sm:text-sm font-medium">
                     いくまてぃー | いくま
                   </span>
                 </h2>
               </CardTitle>
               <CollapsibleTrigger asChild>
                 <Button variant="outline">
-                  詳細を見る
-                  <ChevronsUpDown className="h-4 w-4 ml-2" />
+                  <span className="hidden md:inline">詳細を見る</span>
+                  <ChevronsUpDown className="h-4 w-4 md:ml-2" />
                 </Button>
               </CollapsibleTrigger>
             </CardHeader>
             <CardContent>
               <div className="prose">
-                <p>
+                <p className="text-sm sm:text-md">
                   Fintechスタートアップで働くプログラマです。フロントエンドが好きです。
                 </p>
               </div>
@@ -165,7 +206,7 @@ export default function Index() {
               <CollapsibleContent className="grid space-y-8">
                 <section className="grid space-y-2">
                   <TypographyMuted>自己紹介</TypographyMuted>
-                  <div className="prose">
+                  <div className="prose text-sm sm:text-md">
                     <p>
                       もともと業務パッケージの導入コンサル的なことをやっていましたが、
                       <Link
@@ -264,46 +305,33 @@ export default function Index() {
           </Collapsible>
         </Card>
         <div className="grid md:grid-cols-2 gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Blog</CardTitle>
-              <CardDescription>最新の投稿</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-2">
-              <div className="w-full h-40 bg-slate-400 rounded" />
-              <h3 className="text-md font-bold">タイトル</h3>
-              <TypographyMuted className="line-clamp-2">説明文</TypographyMuted>
-            </CardContent>
-            <CardFooter className="flex justify-end">
-              <Button variant="outline" asChild>
-                <Link to="/posts">
-                  <ChevronRightCircle className="w-4 h-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Talks</CardTitle>
-              <CardDescription>最新の登壇</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-2">
-              <div className="w-full h-40 bg-slate-400 rounded" />
-              <h3 className="text-md font-bold">タイトル</h3>
-              <TypographyMuted className="line-clamp-2">説明文</TypographyMuted>
-            </CardContent>
-            <CardFooter className="flex justify-end">
-              <Button variant="outline" asChild>
-                <Link to="/talks">
-                  <ChevronRightCircle className="w-4 h-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
+          <ContentCard
+            cardTitle="Blog"
+            cardDescription="最新の投稿"
+            backgroundContent={{
+              emoji: posts.emoji.value,
+            }}
+            title={posts.title}
+            description={posts.body.replace(
+              /#|##|###|####|#####|######|\[.*?\]\(.*?\)|\*|-|1.| \| |\n/g,
+              " "
+            )}
+            href={`/posts/${posts._id}`}
+          />
+          <ContentCard
+            cardTitle="Talk"
+            cardDescription="最新の登壇"
+            backgroundContent={{
+              imageUrl: "/ogp.png",
+            }}
+            title="自分だけの小さなSelenium「Olenium」を作って始める、ブラウザ自動化技術の理論と実践"
+            description="Kaigi on Rails 2022で登壇しました。"
+            href="/talks"
+          />
         </div>
         <Alert>
           <Coffee className="h-6 w-6 stroke-yellow-800 " />
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-x-2">
             <div className="mt-2">
               <AlertTitle>Buy me a Coffee!</AlertTitle>
               <AlertDescription>
@@ -312,7 +340,7 @@ export default function Index() {
             </div>
             <Button variant="outline" asChild size="sm" className="mt-2">
               <Link to="https://www.buymeacoffee.com/ikuma" target="_blank">
-                <Coffee className="pt-0.5 w-5 h-5" />
+                <Coffee className="w-4 h-4" />
               </Link>
             </Button>
           </div>
@@ -321,3 +349,77 @@ export default function Index() {
     </div>
   );
 }
+
+const ContentCard = ({
+  cardTitle,
+  cardDescription,
+  backgroundContent,
+  title,
+  description,
+  href,
+}: {
+  cardTitle: string;
+  cardDescription: string;
+  backgroundContent:
+    | {
+        imageUrl: string;
+      }
+    | {
+        emoji: string;
+      };
+  title: string;
+  description: string;
+  href: string;
+}) => {
+  const CardImage = () => {
+    if ("imageUrl" in backgroundContent) {
+      return (
+        <div className="w-full h-40 rounded grid place-content-center shadow-sm">
+          <img
+            src={backgroundContent.imageUrl}
+            alt="ogp"
+            className="object-cover w-full h-full rounded"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-full h-40 p-6 rounded grid place-content-center shadow">
+        <span className="text-8xl">{backgroundContent.emoji}</span>
+      </div>
+    );
+  };
+
+  return (
+    <Tooltip>
+      <Card>
+        <CardHeader>
+          <CardTitle>{cardTitle}</CardTitle>
+          <CardDescription>{cardDescription}</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <CardImage />
+          <div className="overflow-auto">
+            <TooltipTrigger className="text-left">
+              <h3 className="text-md font-bold line-clamp-1">{title}</h3>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>{title}</p>
+            </TooltipContent>
+            <TypographyMuted className="line-clamp-2 mt-2">
+              {description}
+            </TypographyMuted>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <Button variant="outline" asChild>
+            <Link to={href}>
+              <ChevronRightCircle className="w-4 h-4" />
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    </Tooltip>
+  );
+};

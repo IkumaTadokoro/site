@@ -19,6 +19,10 @@ import PageTitle from "~/components/page-title";
 interface Post extends Content {
   title: string;
   body: string;
+  emoji: {
+    type: "emoji";
+    value: string;
+  };
   category: "tech" | "life" | "idea";
 }
 
@@ -119,6 +123,7 @@ const FilteredPosts = ({
           id={content._id}
           title={content.title}
           body={content.body}
+          emoji={content.emoji}
           category={content.category}
           createdAt={content._sys.raw.firstPublishedAt}
           updatedAt={content._sys.raw.publishedAt}
