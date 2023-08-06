@@ -1,3 +1,4 @@
+import EmptyState from "~/components/empty-state";
 import PageTitle from "~/components/page-title";
 
 export default function TechStack() {
@@ -7,6 +8,7 @@ export default function TechStack() {
         title="Tech Stack"
         description="使用している技術スタックです"
       />
+      <EmptyState type="maintenance" />
     </div>
   );
 }

@@ -1,20 +1,13 @@
 import ArticleCard from "~/components/article-card";
-import { TypographyMuted } from "~/components/typography";
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 import type { LoaderArgs } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import {
-  Braces,
-  Lightbulb,
-  Sprout,
-  Dices,
-  Gamepad2,
-  CircleIcon,
-} from "lucide-react";
+import { Braces, Lightbulb, Sprout, CircleIcon } from "lucide-react";
 import PageTitle from "~/components/page-title";
+import EmptyState from "~/components/empty-state";
 
 interface Post extends Content {
   title: string;
@@ -104,15 +97,7 @@ const FilteredPosts = ({
       : contents.items.filter((content) => content.category === category);
 
   if (filteredPosts.length === 0) {
-    return (
-      <div className="p-8 grid gap-8 place-content-center place-items-center grid-cols-2 max-w-fit mx-auto">
-        <Dices className="h-12 w-12 text-muted-foreground animate-bounce" />
-        <Gamepad2 className="h-12 w-12 text-muted-foreground animate-bounce" />
-        <TypographyMuted className="col-span-2">
-          該当する記事がありません
-        </TypographyMuted>
-      </div>
-    );
+    return <EmptyState type="not-found" />;
   }
 
   return (

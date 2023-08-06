@@ -13,16 +13,23 @@ export function TypographyH1({ children }: TypographyProps) {
   );
 }
 
-export function TypographyH2({ children }: TypographyProps) {
+export function TypographyH2({ children, className }: TypographyProps) {
   return (
-    <h2 className="scroll-m-20 pb-2 text-xl md:text-3xl font-bold tracking-tight transition-colors first:mt-0">
+    <h2
+      className={cn(
+        "scroll-m-20 pb-2 text-xl md:text-3xl font-bold tracking-tight transition-colors first:mt-0",
+        className
+      )}
+    >
       {children}
     </h2>
   );
 }
 
-export function TypographyLead({ children }: TypographyProps) {
-  return <p className="text-xl text-muted-foreground">{children}</p>;
+export function TypographyLead({ children, className }: TypographyProps) {
+  return (
+    <p className={cn("text-xl text-muted-foreground", className)}>{children}</p>
+  );
 }
 
 export function TypographyMuted({ children, className }: TypographyProps) {
