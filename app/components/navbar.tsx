@@ -17,61 +17,23 @@ import {
 import { forwardRef } from "react";
 import { cn } from "~/lib/utils";
 import { Link } from "@remix-run/react";
-import { Newspaper, Presentation, Info } from "lucide-react";
+import { Newspaper, Presentation, Info, VenetianMask } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 export default function NavBar() {
   return (
     <header className="shadow-sm">
-      <div className="max-w-full md:max-w-5xl py-3 mx-auto">
+      <div className="max-w-full md:max-w-5xl py-3 mx-auto px-2">
         <ul className="flex justify-between items-center">
           <li>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src="/ikuma.png" />
-                      <AvatarFallback>ikuma-t</AvatarFallback>
-                    </Avatar>
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid gap-3 p-4 w-[250px] md:w-[400px] lg:w-[450px] lg:grid-cols-[.75fr_1fr]">
-                      <li className="row-span-3">
-                        <NavigationMenuLink asChild>
-                          <a
-                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
-                            href="/"
-                          >
-                            <div className="flex gap-2 items-center mb-4">
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage src="/ikuma.png" />
-                                <AvatarFallback>IT</AvatarFallback>
-                              </Avatar>
-                              <div className="text-lg font-semibold">
-                                ikuma-t
-                              </div>
-                            </div>
-                            <p className="text-xs leading-tight text-muted-foreground">
-                              フロントエンドとWeb標準が好きなエンジニアです！
-                            </p>
-                          </a>
-                        </NavigationMenuLink>
-                      </li>
-                      <ListItem href="/about" title="自己紹介">
-                        わたしについて
-                      </ListItem>
-                      <ListItem href="/technology-stack" title="技術スタック">
-                        プライベート・個人での使用技術スタックについて
-                      </ListItem>
-                      <ListItem href="/sns" title="SNS">
-                        SNSアカウント一覧
-                      </ListItem>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            <Link to="/">
+              <Avatar className="h-8 w-8 hover:opacity-70">
+                <AvatarImage src="/ikuma.png" />
+                <AvatarFallback>ikuma-t</AvatarFallback>
+              </Avatar>
+            </Link>
           </li>
+          <li className="grow" />
           <li>
             <Navigation />
           </li>
@@ -113,6 +75,35 @@ const Navigation = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
+            <NavigationMenuTrigger>
+              <div className="flex flex-row gap-2">
+                <VenetianMask className="h-5 w-5" />
+                <span className="hidden md:inline">About</span>
+              </div>
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid gap-3 p-4 w-[220px] md:w-[400px] lg:w-[450px] lg:grid-cols-[.75fr_1fr]">
+                <li className="row-span-2">
+                  <NavigationMenuLink className="grid place-content-center place-items-center h-full gap-2 rounded-md bg-gradient-to-r from-yellow-200 to-yellow-400 p-3 no-underline outline-none focus:shadow-md">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/ikuma.png" />
+                      <AvatarFallback>IT</AvatarFallback>
+                    </Avatar>
+                    <Badge className="bg-yellow-600">ikuma-t</Badge>
+                  </NavigationMenuLink>
+                </li>
+                <ListItem href="/" title="自己紹介">
+                  わたしについて
+                </ListItem>
+                <ListItem href="/tech-stack" title="技術スタック">
+                  プライベート・個人での使用技術スタックについて
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+        <NavigationMenuList>
+          <NavigationMenuItem>
             <Link to="/posts">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 <Tooltip>
@@ -147,7 +138,7 @@ const Navigation = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link to="/docs">
+            <Link to="/info">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 <Tooltip>
                   <TooltipTrigger>

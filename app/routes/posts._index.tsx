@@ -1,5 +1,5 @@
 import ArticleCard from "~/components/article-card";
-import { TypographyH1, TypographyMuted } from "~/components/typography";
+import { TypographyMuted } from "~/components/typography";
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
@@ -14,6 +14,7 @@ import {
   Gamepad2,
   CircleIcon,
 } from "lucide-react";
+import PageTitle from "~/components/page-title";
 
 interface Post extends Content {
   title: string;
@@ -43,12 +44,10 @@ export const loader = async ({ context }: LoaderArgs) => {
 export default function Posts() {
   return (
     <div className="grid gap-x-4 gap-y-4">
-      <div className="grid gap-2 row-span-1">
-        <TypographyH1>Blog</TypographyH1>
-        <TypographyMuted>
-          日常や技術的な学びを書き溜めた一覧です。
-        </TypographyMuted>
-      </div>
+      <PageTitle
+        title="Blog"
+        description="日常や技術的な学びを書き溜めた一覧です"
+      />
       <Tabs defaultValue="all">
         <TabsList className="grid w-full grid-cols-4 mb-8">
           <TabsTrigger value="all">
