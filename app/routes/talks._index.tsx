@@ -46,7 +46,7 @@ export const loader = async ({ context }: LoaderArgs) => {
     appUid: "ikuma-t",
     modelUid: "talk",
     query: {
-      select: ["title", "body", "ogp", "eventName", "eventDate"],
+      select: ["_id", "title", "body", "ogp", "eventName", "eventDate"],
       order: ["-eventDate"],
       body: { fmt: "text" },
     },
@@ -60,7 +60,6 @@ export const loader = async ({ context }: LoaderArgs) => {
 export default function Talks() {
   const { talks } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const [latestTalk, ...otherTalks] = talks.items;
-  // otherTalksをeventDateの年ごとにグルーピングする
   const otherTalkGroupedByYear = otherTalks.reduce((acc, talk) => {
     const year = new Date(talk.eventDate).getFullYear();
     if (!acc[year]) {

@@ -26,6 +26,14 @@ export function TypographyH2({ children, className }: TypographyProps) {
   );
 }
 
+export function TypographyH3({ children, className }: TypographyProps) {
+  return (
+    <h3 className={cn("text-lg md:text-xl font-semibold", className)}>
+      {children}
+    </h3>
+  );
+}
+
 export function TypographyLead({ children, className }: TypographyProps) {
   return (
     <p className={cn("text-xl text-muted-foreground", className)}>{children}</p>

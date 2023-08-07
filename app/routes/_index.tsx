@@ -100,7 +100,7 @@ export const loader = async ({ context }: LoaderArgs) => {
     appUid: "ikuma-t",
     modelUid: "talk",
     query: {
-      select: ["title", "body", "ogp", "eventDate"],
+      select: ["_id", "title", "body", "ogp", "eventDate"],
       order: ["-eventDate"],
       body: { fmt: "text" },
     },
