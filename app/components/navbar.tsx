@@ -17,7 +17,7 @@ import {
 import { forwardRef } from "react";
 import { cn } from "~/lib/utils";
 import { Link } from "@remix-run/react";
-import { Newspaper, Presentation, Info, VenetianMask } from "lucide-react";
+import { Newspaper, Presentation, VenetianMask } from "lucide-react";
 import { Badge } from "./ui/badge";
 
 export default function NavBar() {
@@ -132,23 +132,6 @@ const Navigation = () => {
                   </TooltipTrigger>
                   <TooltipContent sideOffset={20}>
                     <p>登壇資料です！</p>
-                  </TooltipContent>
-                </Tooltip>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link to="/info">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <div className="flex flex-row gap-2">
-                      <Info className="h-5 w-5" />
-                      <span className="hidden md:inline">Info</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent sideOffset={20}>
-                    <p>個人的なお知らせです！</p>
                   </TooltipContent>
                 </Tooltip>
               </NavigationMenuLink>

@@ -44,6 +44,15 @@ import {
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
+import { Badge } from "~/components/ui/badge";
+import Time from "~/components/time";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion";
+import parse from "html-react-parser";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -60,6 +69,13 @@ interface Post extends Content {
     value: string;
   };
   category: "tech" | "life" | "idea";
+}
+
+interface Information extends Content {
+  title: string;
+  body: string;
+  publishedAt: string;
+  pinned: boolean;
 }
 
 interface Talk extends Content {
@@ -114,19 +130,39 @@ export const loader = async ({ context }: LoaderArgs) => {
     },
   });
 
-  return { latestPost, latestTalk };
+  const latestInformation = await client.getContents<Information>({
+    appUid: "ikuma-t",
+    modelUid: "information",
+    query: {
+      limit: 3,
+      order: ["-publishedAt"],
+    },
+  });
+
+  const pinnedInformation = await client.getFirstContent<Information>({
+    appUid: "ikuma-t",
+    modelUid: "information",
+    query: {
+      and: [{ pinned: true }],
+    },
+  });
+
+  return { latestPost, latestTalk, latestInformation, pinnedInformation };
 };
 
 export default function Index() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { latestPost, latestTalk } = useLoaderData() as Awaited<
-    ReturnType<typeof loader>
-  >;
+  const { latestPost, latestTalk, latestInformation, pinnedInformation } =
+    useLoaderData() as Awaited<ReturnType<typeof loader>>;
   if (!latestPost) {
     return null;
   }
 
   if (!latestTalk) {
+    return null;
+  }
+
+  if (!latestInformation) {
     return null;
   }
 
@@ -141,25 +177,6 @@ export default function Index() {
         </p>
       </section>
       <div className="grid gap-4">
-        <Alert>
-          <Megaphone className="h-6 w-6 stroke-yellow-400 " />
-          <div className="flex justify-between items-center gap-x-2">
-            <div className="mt-2">
-              <AlertTitle>登壇情報</AlertTitle>
-              <AlertDescription>
-                8/25・26 開催の スクラムフェス仙台で登壇します！
-              </AlertDescription>
-            </div>
-            <Button variant="outline" asChild size="sm" className="mt-2">
-              <Link
-                to="https://confengine.com/conferences/scrum-fest-sendai-2023/proposal/18657"
-                target="_blank"
-              >
-                <ExternalLink className="w-4 h-4" />
-              </Link>
-            </Button>
-          </div>
-        </Alert>
         <Card>
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CardHeader className="flex justify-between flex-row items-center">
@@ -346,6 +363,71 @@ export default function Index() {
             </CardContent>
           </Collapsible>
         </Card>
+        <Card>
+          <CardHeader className="flex justify-between flex-wrap flex-row items-center">
+            <CardTitle className="flex items-center gap-x-2">
+              <Megaphone className="h-6 w-6" />
+              個人的なお知らせ
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              <section>
+                <CardDescription className="text-sm font-semibold text-muted-foreground">
+                  ピックアップ！
+                </CardDescription>
+                {pinnedInformation && (
+                  <AccordionItem
+                    key={`${pinnedInformation._id}_pinned`}
+                    value={`${pinnedInformation._id}_pinned`}
+                  >
+                    <AccordionTrigger>
+                      <div className="flex flex-wrap md:flex-nowrap justify-between gap-x-4 gap-y-2 items-center">
+                        <Badge variant="default">
+                          <Time timeString={pinnedInformation.publishedAt} />
+                        </Badge>
+                        <span className="text-sm font-semibold">
+                          {pinnedInformation.title}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="prose-sm prose-a:text-blue-700">
+                      {parse(pinnedInformation.body)}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
+              </section>
+              <section className="mt-8">
+                <CardDescription className="text-sm font-semibold text-muted-foreground">
+                  最新3件
+                </CardDescription>
+                {latestInformation.items.map((information) => {
+                  return (
+                    <AccordionItem
+                      key={information._id}
+                      value={information._id}
+                    >
+                      <AccordionTrigger>
+                        <div className="flex flex-wrap md:flex-nowrap justify-between gap-x-4 gap-y-2 items-center">
+                          <Badge variant="secondary">
+                            <Time timeString={information.publishedAt} />
+                          </Badge>
+                          <span className="text-sm font-semibold">
+                            {information.title}
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="prose-sm prose-a:text-blue-700">
+                        {parse(information.body)}
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </section>
+            </Accordion>
+          </CardContent>
+        </Card>
+
         <div className="grid md:grid-cols-2 gap-4">
           <ContentCard
             cardTitle="Blog"
@@ -419,11 +501,11 @@ const ContentCard = ({
   const CardImage = () => {
     if ("imageUrl" in backgroundContent) {
       return (
-        <div className="w-full h-40 rounded grid place-content-center shadow-sm">
+        <div className="rounded grid place-content-center shadow">
           <img
             src={backgroundContent.imageUrl}
             alt="ogp"
-            className="object-cover w-full h-full rounded"
+            className="object-cover"
           />
         </div>
       );
