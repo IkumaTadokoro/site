@@ -79,7 +79,6 @@ export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
   data,
 }: V2_MetaArgs) => {
   const url = new URL(location.pathname, "https://ikuma-t.com");
-  const ogImageUrl = new URL(`${location.pathname}/ogp.png`, url).toString();
   const title = data.content.title;
   const htmlExpr = /<("[^"]*"|'[^']*'|[^'">])*>/g;
   const description =
@@ -97,7 +96,7 @@ export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
     { property: "og:url", content: url },
     {
       property: "og:image",
-      content: ogImageUrl,
+      content: "/ogp.png",
     },
   ];
 };
