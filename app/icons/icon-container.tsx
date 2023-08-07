@@ -1,6 +1,3 @@
-import { css } from "styled-system/css";
-import { grid } from "styled-system/patterns";
-
 export default function IconContainer({
   children,
   srText,
@@ -10,34 +7,14 @@ export default function IconContainer({
   srText: string;
   size?: number;
 }) {
-  const containerSize = `48px`;
   const iconSize = `${size}px`;
-  const srOnly = css({
-    position: "absolute",
-    width: "1px",
-    height: "1px",
-    padding: 0,
-    margin: "-1px",
-    overflow: "hidden",
-    clip: "rect(0, 0, 0, 0)",
-    whiteSpace: "nowrap",
-    borderWidth: 0,
-  });
 
   return (
-    <div
-      className={grid({
-        rounded: "md",
-        shadow: "xs",
-        placeContent: "center",
-        width: containerSize,
-        height: containerSize,
-      })}
-    >
+    <div className="grid place-content-center rounded-md shadow-sm w-12 h-12">
       <svg viewBox="0 0 128 128" width={iconSize} height={iconSize}>
         {children}
       </svg>
-      <span className={srOnly}>{srText}</span>
+      <span className="sr-only">{srText}</span>
     </div>
   );
 }
