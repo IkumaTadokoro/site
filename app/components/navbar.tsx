@@ -23,7 +23,7 @@ import { Badge } from "./ui/badge";
 export default function NavBar() {
   return (
     <header className="shadow-sm">
-      <div className="max-w-full md:max-w-5xl py-3 mx-auto px-2">
+      <div className="max-w-full md:max-w-5xl py-3 mx-auto px-4">
         <ul className="flex justify-between items-center">
           <li>
             <Link to="/">
@@ -82,7 +82,7 @@ const Navigation = () => {
               </div>
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid gap-3 p-4 w-[220px] md:w-[400px] lg:w-[450px] lg:grid-cols-[.75fr_1fr]">
+              <ul className="grid gap-3 p-4 w-[180px] md:w-[300px] lg:w-[450px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-2">
                   <NavigationMenuLink className="grid place-content-center place-items-center h-full gap-2 rounded-md bg-gradient-to-r from-yellow-200 to-yellow-400 p-3 no-underline outline-none focus:shadow-md">
                     <Avatar className="h-8 w-8">
@@ -95,7 +95,7 @@ const Navigation = () => {
                 <ListItem href="/" title="自己紹介">
                   わたしについて
                 </ListItem>
-                <ListItem href="/tech-stack" title="技術スタック">
+                <ListItem href="/tech-stack" title="技術スタック（⛩️メンテ中）">
                   プライベート・個人での使用技術スタックについて
                 </ListItem>
               </ul>
