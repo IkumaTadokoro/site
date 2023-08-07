@@ -57,7 +57,15 @@ import parse from "html-react-parser";
 export const meta: V2_MetaFunction = () => {
   return [
     { title: "ikuma-t.com" },
-    { name: "description", content: "移行作業中" },
+    { name: "description", content: "プログラマikuma-tの個人サイトです。" },
+    { property: "og:title", content: "ikuma-t.com" },
+    {
+      property: "og:description",
+      content: "プログラマikuma-tの個人サイトです。",
+    },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://ikuma-t.com" },
+    { property: "og:image", content: "/ogp.png" },
   ];
 };
 

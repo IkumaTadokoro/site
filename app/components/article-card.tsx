@@ -27,8 +27,6 @@ export default function ArticleCard({
   const markdownExpr =
     /#|##|###|####|#####|######|\[.*?\]\(.*?\)|\*|-|1.| \| |\n/g;
 
-  console.log(emoji);
-
   return (
     <Link to={id} className="hover:opacity-60">
       <div className="grid md:grid-cols-[80px_1fr] grid-cols-[40px_1fr] gap-x-3 py-2 items-center">

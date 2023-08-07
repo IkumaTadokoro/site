@@ -1,7 +1,11 @@
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
-import type { LoaderArgs } from "@remix-run/cloudflare";
+import type {
+  LoaderArgs,
+  V2_MetaArgs,
+  V2_MetaFunction,
+} from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { TypographyH2, TypographyH3 } from "~/components/typography";
 import parse from "html-react-parser";
@@ -53,6 +57,34 @@ export const loader = async ({ context, params }: LoaderArgs) => {
   return {
     talk,
   };
+};
+
+export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
+  location,
+  data,
+}: V2_MetaArgs) => {
+  const url = new URL(location.pathname, "https://ikuma-t.com");
+  const ogImageUrl = new URL(`${location.pathname}/ogp.png`, url).toString();
+  const title = data.talk.title;
+  const htmlExpr = /<("[^"]*"|'[^']*'|[^'">])*>/g;
+  const description =
+    data.talk.body.replace(htmlExpr, "").slice(0, 117) + "...";
+
+  return [
+    { title },
+    { name: "description", content: description },
+    { property: "og:title", content: title },
+    {
+      property: "og:description",
+      content: description,
+    },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: url },
+    {
+      property: "og:image",
+      content: ogImageUrl,
+    },
+  ];
 };
 
 export default function TalkSlug() {

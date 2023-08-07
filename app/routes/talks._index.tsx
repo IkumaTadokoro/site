@@ -3,9 +3,24 @@ import TalkCard from "~/components/talk-card";
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
-import type { LoaderArgs } from "@remix-run/cloudflare";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import TallyIcon from "~/components/tally-icon";
+
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: "Talks | ikuma-t.com" },
+    { name: "description", content: "登壇したイベントの一覧です。" },
+    { property: "og:title", content: "Talks" },
+    {
+      property: "og:description",
+      content: "登壇したイベントの一覧です",
+    },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://ikuma-t.com/talks" },
+    { property: "og:image", content: "/ogp.png" },
+  ];
+};
 
 interface Talk extends Content {
   title: string;
