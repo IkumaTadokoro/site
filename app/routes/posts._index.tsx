@@ -2,12 +2,30 @@ import ArticleCard from "~/components/article-card";
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
-import type { LoaderArgs } from "@remix-run/cloudflare";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Braces, Lightbulb, Sprout, CircleIcon } from "lucide-react";
 import PageTitle from "~/components/page-title";
 import EmptyState from "~/components/empty-state";
+
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: "Blog | ikuma-t.com" },
+    {
+      name: "description",
+      content: "日常や技術的な学びを書き溜めた一覧です。",
+    },
+    { property: "og:title", content: "Blog" },
+    {
+      property: "og:description",
+      content: "日常や技術的な学びを書き溜めた一覧です。",
+    },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://ikuma-t.com/posts" },
+    { property: "og:image", content: "/ogp.png" },
+  ];
+};
 
 interface Post extends Content {
   title: string;

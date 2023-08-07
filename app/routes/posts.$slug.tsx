@@ -7,7 +7,7 @@ import {
   Undo2,
   Link2,
 } from "lucide-react";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, V2_MetaArgs, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import CategoryBadge from "~/components/category-badge";
@@ -15,7 +15,7 @@ import Time from "~/components/time";
 import { createClient } from "newt-client-js";
 import type { Content } from "newt-client-js";
 import fetchAdapter from "@vespaiach/axios-fetch-adapter";
-import type { LoaderArgs } from "@remix-run/cloudflare";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import type { HTMLReactParserOptions } from "html-react-parser";
 import parse, { domToReact, Element } from "html-react-parser";
 import React from "react";
@@ -74,6 +74,35 @@ export const loader = async ({ context, params }: LoaderArgs) => {
   };
 };
 
+export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
+  location,
+  data,
+}: V2_MetaArgs) => {
+  const url = new URL(location.pathname, "https://ikuma-t.com");
+  const ogImageUrl = new URL(`${location.pathname}/ogp.png`, url).toString();
+  const title = data.content.title;
+  const htmlExpr = /<("[^"]*"|'[^']*'|[^'">])*>/g;
+  const description =
+    data.content.body.replace(htmlExpr, "").slice(0, 117) + "...";
+
+  return [
+    { title },
+    { name: "description", content: description },
+    { property: "og:title", content: title },
+    {
+      property: "og:description",
+      content: description,
+    },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: url },
+    {
+      property: "og:image",
+      content: ogImageUrl,
+    },
+  ];
+};
+
+// TODO: URLが移動しないので、別の方法を利用したい。
 const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
   e.preventDefault();
   const element = document.getElementById(href);
