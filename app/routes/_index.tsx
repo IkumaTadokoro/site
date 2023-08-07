@@ -62,6 +62,32 @@ interface Post extends Content {
   category: "tech" | "life" | "idea";
 }
 
+interface Talk extends Content {
+  title: string;
+  body: string;
+  ogp: {
+    _id: string;
+    altText: string;
+    description: string;
+    fileName: string;
+    fileSize: number;
+    width: number;
+    height: number;
+    title: string;
+    fileType: string;
+    src: string;
+  };
+  slideUrl: {
+    html: string;
+    url: string;
+  };
+  eventUrl: {
+    html: string;
+    url: string;
+  };
+  eventDate: string;
+}
+
 export const loader = async ({ context }: LoaderArgs) => {
   const client = createClient({
     spaceUid: context.env.NEWT_SPACE_UID,
@@ -70,7 +96,17 @@ export const loader = async ({ context }: LoaderArgs) => {
     adapter: fetchAdapter,
   });
 
-  const posts = await client.getFirstContent<Post>({
+  const latestTalk = await client.getFirstContent<Talk>({
+    appUid: "ikuma-t",
+    modelUid: "talk",
+    query: {
+      select: ["title", "body", "ogp", "eventDate"],
+      order: ["-eventDate"],
+      body: { fmt: "text" },
+    },
+  });
+
+  const latestPost = await client.getFirstContent<Post>({
     appUid: "ikuma-t",
     modelUid: "post",
     query: {
@@ -78,13 +114,19 @@ export const loader = async ({ context }: LoaderArgs) => {
     },
   });
 
-  return posts;
+  return { latestPost, latestTalk };
 };
 
 export default function Index() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const posts = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  if (!posts) {
+  const { latestPost, latestTalk } = useLoaderData() as Awaited<
+    ReturnType<typeof loader>
+  >;
+  if (!latestPost) {
+    return null;
+  }
+
+  if (!latestTalk) {
     return null;
   }
 
@@ -309,24 +351,27 @@ export default function Index() {
             cardTitle="Blog"
             cardDescription="最新の投稿"
             backgroundContent={{
-              emoji: posts.emoji.value,
+              emoji: latestPost.emoji.value,
             }}
-            title={posts.title}
-            description={posts.body.replace(
+            title={latestPost.title}
+            description={latestPost.body.replace(
               /#|##|###|####|#####|######|\[.*?\]\(.*?\)|\*|-|1.| \| |\n/g,
               " "
             )}
-            href={`/posts/${posts._id}`}
+            href={`/posts/${latestPost._id}`}
           />
           <ContentCard
             cardTitle="Talk"
             cardDescription="最新の登壇"
             backgroundContent={{
-              imageUrl: "/ogp.png",
+              imageUrl: latestTalk.ogp.src,
             }}
-            title="自分だけの小さなSelenium「Olenium」を作って始める、ブラウザ自動化技術の理論と実践"
-            description="Kaigi on Rails 2022で登壇しました。"
-            href="/talks"
+            title={latestTalk.title}
+            description={latestTalk.body.replace(
+              /#|##|###|####|#####|######|\[.*?\]\(.*?\)|\*|-|1.| \| |\n/g,
+              " "
+            )}
+            href={`/talks/${latestTalk._id}`}
           />
         </div>
         <Alert>
@@ -394,9 +439,16 @@ const ContentCard = ({
   return (
     <Tooltip>
       <Card>
-        <CardHeader>
-          <CardTitle>{cardTitle}</CardTitle>
-          <CardDescription>{cardDescription}</CardDescription>
+        <CardHeader className="flex flex-row justify-between items-center">
+          <div>
+            <CardTitle>{cardTitle}</CardTitle>
+            <CardDescription>{cardDescription}</CardDescription>
+          </div>
+          <Button variant="outline" asChild>
+            <Link to={href}>
+              <ChevronRightCircle className="w-4 h-4" />
+            </Link>
+          </Button>
         </CardHeader>
         <CardContent className="grid gap-4">
           <CardImage />
@@ -412,13 +464,6 @@ const ContentCard = ({
             </TypographyMuted>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button variant="outline" asChild>
-            <Link to={href}>
-              <ChevronRightCircle className="w-4 h-4" />
-            </Link>
-          </Button>
-        </CardFooter>
       </Card>
     </Tooltip>
   );
