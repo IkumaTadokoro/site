@@ -81,8 +81,10 @@ export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
     { property: "og:url", content: url },
     {
       property: "og:image",
-      content: "/ogp.png",
+      content: "https://ikuma-t.com/ogp.png",
     },
+    { property: "twitter:card", content: "summary_large_image" },
+    { property: "twitter:site", content: "@ikumatdkr" },
   ];
 };
 
