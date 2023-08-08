@@ -30,6 +30,7 @@ import { cn } from "~/lib/utils";
 
 interface Post extends Content {
   title: string;
+  slug: string;
   body: string;
   category: "tech" | "life" | "idea";
   publishedAt: string;
@@ -44,11 +45,19 @@ export const loader = async ({ context, params }: LoaderArgs) => {
     adapter: fetchAdapter,
   });
 
-  const post = await client.getContent<Post>({
+  const post = (await client.getFirstContent<Post>({
     appUid: context.env.NEWT_APP_UID,
     modelUid: "post",
-    contentId: params.slug,
-  });
+    query: {
+      and: [
+        {
+          slug: {
+            match: params.slug,
+          },
+        },
+      ],
+    },
+  })) as Post;
 
   const nextSibling = await client.getFirstContent<Post>({
     appUid: context.env.NEWT_APP_UID,
@@ -57,7 +66,7 @@ export const loader = async ({ context, params }: LoaderArgs) => {
       and: [
         {
           publishedAt: {
-            gt: post.publishedAt,
+            gt: post!.publishedAt,
           },
         },
       ],
@@ -71,7 +80,7 @@ export const loader = async ({ context, params }: LoaderArgs) => {
       and: [
         {
           publishedAt: {
-            lt: post.publishedAt,
+            lt: post!.publishedAt,
           },
         },
       ],
@@ -117,7 +126,6 @@ export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
   ];
 };
 
-// TODO: URLが移動しないので、別の方法を利用したい。
 const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
   e.preventDefault();
   const element = document.getElementById(href);
@@ -196,7 +204,7 @@ export default function PostSlug() {
         <div className="flex-col md:flex-row flex justify-between items-center gap-x-4 gap-y-2">
           {next && (
             <Button variant="outline" asChild className="w-full md:w-fit">
-              <Link to={`/posts/${next._id}`}>
+              <Link to={`/posts/${next.slug}`}>
                 <span className="w-64 md:w-48 truncate">{next.title}</span>
                 <ChevronLeft className="w-4 h-4 ml-2" />
               </Link>
@@ -205,7 +213,7 @@ export default function PostSlug() {
           <div className="grow" />
           {prev && (
             <Button variant="outline" asChild className="w-full md:w-fit">
-              <Link to={`/posts/${prev._id}`}>
+              <Link to={`/posts/${prev.slug}`}>
                 <span className="w-64 md:w-48 truncate">{prev.title}</span>
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Link>
