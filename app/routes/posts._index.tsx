@@ -37,6 +37,8 @@ interface Post extends Content {
     value: string;
   };
   category: "tech" | "life" | "idea";
+  publishedAt: string;
+  updatedAt: string;
 }
 
 export const loader = async ({ context }: LoaderArgs) => {
@@ -47,15 +49,16 @@ export const loader = async ({ context }: LoaderArgs) => {
     adapter: fetchAdapter,
   });
 
-  const contents = await client.getContents<Post>({
+  const posts = await client.getContents<Post>({
     appUid: "ikuma-t",
     modelUid: "post",
     query: {
       body: { fmt: "text" },
+      order: ["-publishedAt"],
     },
   });
 
-  return contents;
+  return posts;
 };
 
 export default function Posts() {
