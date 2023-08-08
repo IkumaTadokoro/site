@@ -1,6 +1,5 @@
 import type { V2_MetaFunction, LoaderArgs } from "@remix-run/cloudflare";
 import {
-  ChevronRightCircle,
   ChevronsUpDown,
   Coffee,
   ExternalLink,
@@ -79,6 +78,8 @@ interface Post extends Content {
     value: string;
   };
   category: "tech" | "life" | "idea";
+  publishedAt: string;
+  updatedAt: string;
 }
 
 interface Information extends Content {
@@ -136,6 +137,8 @@ export const loader = async ({ context }: LoaderArgs) => {
     appUid: "ikuma-t",
     modelUid: "post",
     query: {
+      select: ["_id", "title", "body", "emoji"],
+      order: ["-publishedAt"],
       body: { fmt: "text" },
     },
   });
@@ -144,6 +147,7 @@ export const loader = async ({ context }: LoaderArgs) => {
     appUid: "ikuma-t",
     modelUid: "information",
     query: {
+      select: ["_id", "title", "body", "publishedAt"],
       limit: 3,
       order: ["-publishedAt"],
     },
@@ -153,7 +157,9 @@ export const loader = async ({ context }: LoaderArgs) => {
     appUid: "ikuma-t",
     modelUid: "information",
     query: {
+      select: ["_id", "title", "body", "publishedAt"],
       and: [{ pinned: true }],
+      order: ["-publishedAt"],
     },
   });
 
@@ -530,33 +536,30 @@ const ContentCard = ({
 
   return (
     <Tooltip>
-      <Card>
-        <CardHeader className="flex flex-row justify-between items-center">
-          <div>
-            <CardTitle>{cardTitle}</CardTitle>
-            <CardDescription>{cardDescription}</CardDescription>
-          </div>
-          <Button variant="outline" asChild>
-            <Link to={href}>
-              <ChevronRightCircle className="w-4 h-4" />
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <CardImage />
-          <div className="overflow-auto">
-            <TooltipTrigger className="text-left">
-              <h3 className="text-md font-bold line-clamp-1">{title}</h3>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p>{title}</p>
-            </TooltipContent>
-            <TypographyMuted className="line-clamp-2 mt-2">
-              {description}
-            </TypographyMuted>
-          </div>
-        </CardContent>
-      </Card>
+      <Link to={href} className="hover:brightness-90">
+        <Card>
+          <CardHeader className="flex flex-row justify-between items-center">
+            <div>
+              <CardTitle>{cardTitle}</CardTitle>
+              <CardDescription>{cardDescription}</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <CardImage />
+            <div className="overflow-auto">
+              <TooltipTrigger className="text-left">
+                <h3 className="text-md font-bold line-clamp-1">{title}</h3>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>{title}</p>
+              </TooltipContent>
+              <TypographyMuted className="line-clamp-2 mt-2">
+                {description}
+              </TypographyMuted>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
     </Tooltip>
   );
 };

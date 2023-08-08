@@ -7,7 +7,8 @@ import {
   Undo2,
   Link2,
 } from "lucide-react";
-import { Link, V2_MetaArgs, useLoaderData } from "@remix-run/react";
+import type { V2_MetaArgs } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import CategoryBadge from "~/components/category-badge";
@@ -31,6 +32,8 @@ interface Post extends Content {
   title: string;
   body: string;
   category: "tech" | "life" | "idea";
+  publishedAt: string;
+  updatedAt: string;
 }
 
 export const loader = async ({ context, params }: LoaderArgs) => {
@@ -41,35 +44,46 @@ export const loader = async ({ context, params }: LoaderArgs) => {
     adapter: fetchAdapter,
   });
 
-  const content = await client.getContent<Post>({
+  const post = await client.getContent<Post>({
     appUid: context.env.NEWT_APP_UID,
     modelUid: "post",
     contentId: params.slug,
   });
 
-  const siblings = await client.getContents<Post>({
+  const nextSibling = await client.getFirstContent<Post>({
     appUid: context.env.NEWT_APP_UID,
     modelUid: "post",
     query: {
-      or: [
+      and: [
         {
-          "_sys.customOrder": {
-            in: [content._sys.customOrder - 1, content._sys.customOrder + 1],
+          publishedAt: {
+            gt: post.publishedAt,
           },
         },
       ],
+      order: ["publishedAt"],
+    },
+  });
+  const prevSibling = await client.getFirstContent<Post>({
+    appUid: context.env.NEWT_APP_UID,
+    modelUid: "post",
+    query: {
+      and: [
+        {
+          publishedAt: {
+            lt: post.publishedAt,
+          },
+        },
+      ],
+      order: ["-publishedAt"],
     },
   });
 
   return {
-    content,
+    content: post,
     siblings: {
-      prev: siblings.items.find(
-        (item) => item._sys.customOrder === content._sys.customOrder - 1
-      ),
-      next: siblings.items.find(
-        (item) => item._sys.customOrder === content._sys.customOrder + 1
-      ),
+      prev: prevSibling,
+      next: nextSibling,
     },
   };
 };
@@ -109,6 +123,7 @@ const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
   const element = document.getElementById(href);
   if (element) {
     element.scrollIntoView({ behavior: "smooth" });
+    window.history.pushState(null, "", `#${href}`);
   }
 };
 
@@ -179,19 +194,19 @@ export default function PostSlug() {
       <div className="grid gap-y-4">
         <Separator />
         <div className="flex-col md:flex-row flex justify-between items-center gap-x-4 gap-y-2">
-          {prev && (
+          {next && (
             <Button variant="outline" asChild className="w-full md:w-fit">
-              <Link to={`/posts/${prev._id}`}>
-                <span className="w-64 md:w-48 truncate">{prev.title}</span>
+              <Link to={`/posts/${next._id}`}>
+                <span className="w-64 md:w-48 truncate">{next.title}</span>
                 <ChevronLeft className="w-4 h-4 ml-2" />
               </Link>
             </Button>
           )}
           <div className="grow" />
-          {next && (
+          {prev && (
             <Button variant="outline" asChild className="w-full md:w-fit">
-              <Link to={`/posts/${next._id}`}>
-                <span className="w-64 md:w-48 truncate">{next.title}</span>
+              <Link to={`/posts/${prev._id}`}>
+                <span className="w-64 md:w-48 truncate">{prev.title}</span>
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
