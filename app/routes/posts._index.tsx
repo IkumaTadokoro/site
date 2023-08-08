@@ -134,8 +134,8 @@ const FilteredPosts = ({
           body={content.body}
           emoji={content.emoji}
           category={content.category}
-          createdAt={content._sys.raw.firstPublishedAt}
-          updatedAt={content._sys.raw.publishedAt}
+          createdAt={content.publishedAt}
+          updatedAt={content.updatedAt}
         />
       ))}
     </div>

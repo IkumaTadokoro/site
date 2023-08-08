@@ -186,11 +186,8 @@ export default function PostSlug() {
         <CategoryBadge category={content.category} />
         <TypographyH2>{content.title}</TypographyH2>
         <div className="flex space-x-4 text-xs text-muted-foreground">
-          <Time
-            timeString={content._sys.raw.firstPublishedAt}
-            type="createdAt"
-          />
-          <Time timeString={content._sys.raw.publishedAt} type="updatedAt" />
+          <Time timeString={content.publishedAt} type="createdAt" />
+          <Time timeString={content.updatedAt} type="updatedAt" />
         </div>
         <div className="mt-4">
           <TableOfContent tableOfContents={tableOfContents} />
