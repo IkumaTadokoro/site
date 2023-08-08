@@ -109,6 +109,7 @@ const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
   const element = document.getElementById(href);
   if (element) {
     element.scrollIntoView({ behavior: "smooth" });
+    window.history.pushState(null, "", `#${href}`);
   }
 };
 
