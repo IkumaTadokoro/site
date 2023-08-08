@@ -3,8 +3,8 @@ import Time from "./time";
 import CategoryBadge from "./category-badge";
 
 type Props = {
-  id: string;
   title: string;
+  slug: string;
   body: string;
   emoji: {
     type: "emoji";
@@ -16,8 +16,8 @@ type Props = {
 };
 
 export default function ArticleCard({
-  id,
   title,
+  slug,
   body,
   emoji,
   category,
@@ -28,7 +28,7 @@ export default function ArticleCard({
     /#|##|###|####|#####|######|\[.*?\]\(.*?\)|\*|-|1.| \| |\n/g;
 
   return (
-    <Link to={id} className="hover:opacity-60">
+    <Link to={slug} className="hover:opacity-60">
       <div className="grid md:grid-cols-[80px_1fr] grid-cols-[40px_1fr] gap-x-3 py-2 items-center">
         <div className="bg-white shadow-sm aspect-square w-full rounded-sm grid place-content-center text-xl md:text-4xl">
           {emoji.value}

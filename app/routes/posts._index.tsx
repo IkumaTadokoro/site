@@ -31,6 +31,7 @@ export const meta: V2_MetaFunction = () => {
 
 interface Post extends Content {
   title: string;
+  slug: string;
   body: string;
   emoji: {
     type: "emoji";
@@ -128,7 +129,7 @@ const FilteredPosts = ({
       {filteredPosts.map((content) => (
         <ArticleCard
           key={content._id}
-          id={content._id}
+          slug={content.slug}
           title={content.title}
           body={content.body}
           emoji={content.emoji}

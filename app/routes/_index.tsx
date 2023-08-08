@@ -72,6 +72,7 @@ export const meta: V2_MetaFunction = () => {
 
 interface Post extends Content {
   title: string;
+  slug: string;
   body: string;
   emoji: {
     type: "emoji";
@@ -137,7 +138,7 @@ export const loader = async ({ context }: LoaderArgs) => {
     appUid: "ikuma-t",
     modelUid: "post",
     query: {
-      select: ["_id", "title", "body", "emoji"],
+      select: ["slug", "title", "body", "emoji"],
       order: ["-publishedAt"],
       body: { fmt: "text" },
     },
@@ -456,7 +457,7 @@ export default function Index() {
               /#|##|###|####|#####|######|\[.*?\]\(.*?\)|\*|-|1.| \| |\n/g,
               " "
             )}
-            href={`/posts/${latestPost._id}`}
+            href={`/posts/${latestPost.slug}`}
           />
           <ContentCard
             cardTitle="Talk"
@@ -536,8 +537,8 @@ const ContentCard = ({
 
   return (
     <Tooltip>
-      <Link to={href} className="hover:brightness-90">
-        <Card>
+      <Card className="hover:brightness-90">
+        <Link to={href}>
           <CardHeader className="flex flex-row justify-between items-center">
             <div>
               <CardTitle>{cardTitle}</CardTitle>
@@ -558,8 +559,8 @@ const ContentCard = ({
               </TypographyMuted>
             </div>
           </CardContent>
-        </Card>
-      </Link>
+        </Link>
+      </Card>
     </Tooltip>
   );
 };
