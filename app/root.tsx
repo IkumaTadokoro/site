@@ -23,6 +23,13 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        {process.env.NODE_ENV === "production" && (
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "61580db7a7934661ba589ae566ce5ee2"}'
+          ></script>
+        )}
       </head>
       <body>
         <div className="grid grid-rows-[auto,1fr,auto] min-h-screen">
