@@ -36,12 +36,13 @@ export const loader = async ({ context }: LoaderArgs) => {
     env: { NEWT_CDN_API_TOKEN: token, NEWT_SPACE_UID: spaceUid },
   } = context;
   const client = createNewtClient({ spaceUid, token });
-
-  const latestTalk = await getLatestTalks(client);
-  const latestPost = await getLatestPosts(client);
-  const latestInformation = await getLatestInformation(client);
-  const pinnedInformation = await getPinnedInformation(client);
-
+  const [latestTalk, latestPost, latestInformation, pinnedInformation] =
+    await Promise.all([
+      getLatestTalks(client),
+      getLatestPosts(client),
+      getLatestInformation(client),
+      getPinnedInformation(client),
+    ]);
   return { latestPost, latestTalk, latestInformation, pinnedInformation };
 };
 
