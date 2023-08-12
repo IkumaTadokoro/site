@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { ChevronsUpDown, Link2, ExternalLink, Table } from "lucide-react";
+import { ChevronsUpDown, Link2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Icons } from "~/components/icons";
 import { TypographyMuted } from "~/components/typography";
@@ -18,6 +18,7 @@ import {
   CollapsibleContent,
 } from "~/components/ui/collapsible";
 import {
+  Table,
   TableCaption,
   TableHeader,
   TableRow,
