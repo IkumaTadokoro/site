@@ -1,13 +1,12 @@
 import ArticleCard from "~/components/article-card";
-import { createClient } from "newt-client-js";
-import type { Content } from "newt-client-js";
-import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Braces, Lightbulb, Sprout, CircleIcon } from "lucide-react";
 import PageTitle from "~/components/page-title";
 import EmptyState from "~/components/empty-state";
+import { createNewtClient } from "~/utils/newt.server";
+import { getPosts } from "~/models/post.server";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -29,34 +28,14 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-interface Post extends Content {
-  title: string;
-  slug: string;
-  body: string;
-  emoji: {
-    type: "emoji";
-    value: string;
-  };
-  category: "tech" | "life" | "idea";
-  publishedAt: string;
-  updatedAt: string;
-}
-
 export const loader = async ({ context }: LoaderArgs) => {
-  const client = createClient({
-    spaceUid: context.env.NEWT_SPACE_UID,
-    token: context.env.NEWT_CDN_API_TOKEN,
-    apiType: "cdn",
-    adapter: fetchAdapter,
-  });
-
-  const posts = await client.getContents<Post>({
-    appUid: "ikuma-t",
-    modelUid: "post",
-    query: {
-      body: { fmt: "text" },
-      order: ["-publishedAt"],
-    },
+  const {
+    env: { NEWT_CDN_API_TOKEN: token, NEWT_SPACE_UID: spaceUid },
+  } = context;
+  const client = createNewtClient({ spaceUid, token });
+  const posts = await getPosts(client, {
+    body: { fmt: "text" },
+    order: ["-publishedAt"],
   });
 
   return posts;

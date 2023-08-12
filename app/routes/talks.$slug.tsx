@@ -1,6 +1,3 @@
-import { createClient } from "newt-client-js";
-import type { Content } from "newt-client-js";
-import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 import type {
   LoaderArgs,
   V2_MetaArgs,
@@ -11,49 +8,16 @@ import { TypographyH2, TypographyH3 } from "~/components/typography";
 import parse from "html-react-parser";
 import Time from "~/components/time";
 import { DoorOpen } from "lucide-react";
-
-interface Talk extends Content {
-  title: string;
-  body: string;
-  ogp: {
-    _id: string;
-    altText: string;
-    description: string;
-    fileName: string;
-    fileSize: number;
-    width: number;
-    height: number;
-    title: string;
-    fileType: string;
-    src: string;
-  };
-  slideUrl: {
-    html: string;
-    url: string;
-  };
-  eventName: string;
-  eventUrl: {
-    html: string;
-    url: string;
-  };
-  eventDate: string;
-}
+import { createNewtClient } from "~/utils/newt.server";
+import { getTalkById } from "~/models/talk.server";
 
 export const loader = async ({ context, params }: LoaderArgs) => {
-  const client = createClient({
-    spaceUid: context.env.NEWT_SPACE_UID,
-    token: context.env.NEWT_CDN_API_TOKEN,
-    apiType: "cdn",
-    adapter: fetchAdapter,
-  });
+  const {
+    env: { NEWT_CDN_API_TOKEN: token, NEWT_SPACE_UID: spaceUid },
+  } = context;
+  const client = createNewtClient({ spaceUid, token });
 
-  const talk = await client.getContent<Talk>({
-    appUid: "ikuma-t",
-    modelUid: "talk",
-    contentId: params.slug,
-    query: {},
-  });
-
+  const talk = await getTalkById(client, params.slug);
   return {
     talk,
   };
