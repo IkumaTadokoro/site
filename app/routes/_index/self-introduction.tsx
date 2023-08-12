@@ -35,7 +35,7 @@ export const SelfIntroduction = () => {
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle className="flex items-center gap-x-2">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="/ikuma.png" />
+              <AvatarImage src="/ikuma.png" alt="ikumaのアイコン" />
               <AvatarFallback>ikuma-t</AvatarFallback>
             </Avatar>
             <p className="flex md:items-center flex-col md:flex-row gap-x-3 gap-y-1">

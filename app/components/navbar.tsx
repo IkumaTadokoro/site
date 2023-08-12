@@ -28,7 +28,7 @@ export default function NavBar() {
           <li>
             <Link to="/">
               <Avatar className="h-8 w-8 hover:opacity-70">
-                <AvatarImage src="/ikuma.png" />
+                <AvatarImage src="/ikuma.png" alt="ikumaのアイコン" />
                 <AvatarFallback>ikuma-t</AvatarFallback>
               </Avatar>
             </Link>
@@ -86,7 +86,7 @@ const Navigation = () => {
                 <li className="row-span-2">
                   <NavigationMenuLink className="grid place-content-center place-items-center h-full gap-2 rounded-md bg-gradient-to-r from-yellow-200 to-yellow-400 p-3 no-underline outline-none focus:shadow-md">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="/ikuma.png" />
+                      <AvatarImage src="/ikuma.png" alt="ikumaのアイコン" />
                       <AvatarFallback>IT</AvatarFallback>
                     </Avatar>
                     <Badge className="bg-yellow-600">ikuma-t</Badge>
