@@ -41,7 +41,7 @@ export const SelfIntroduction = () => {
             </Avatar>
             <p className="flex md:items-center flex-col md:flex-row gap-x-3 gap-y-1">
               ikuma-t
-              <span className="text-zinc-400 text-xs sm:text-sm font-medium">
+              <span className="text-zinc-500 text-xs sm:text-sm font-medium">
                 いくまてぃー | いくま
               </span>
             </p>
