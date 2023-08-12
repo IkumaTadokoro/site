@@ -13,7 +13,11 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import CategoryBadge from "~/components/category-badge";
 import Time from "~/components/time";
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
+import type {
+  HeadersFunction,
+  LoaderArgs,
+  V2_MetaFunction,
+} from "@remix-run/cloudflare";
 import type { HTMLReactParserOptions } from "html-react-parser";
 import parse, { domToReact, Element } from "html-react-parser";
 import React from "react";
@@ -34,7 +38,6 @@ export const loader = async ({ context, params }: LoaderArgs) => {
   const client = createNewtClient({ spaceUid, token });
 
   const post = await getPostBySlug(client, params.slug);
-  console.log(post);
 
   const nextSibling = await getPost(client, {
     and: [
@@ -64,6 +67,16 @@ export const loader = async ({ context, params }: LoaderArgs) => {
       prev: prevSibling,
       next: nextSibling,
     },
+  };
+};
+
+export const headers: HeadersFunction = () => {
+  // max-age=1sec: Stale-while-revalidateが無効なブラウザではキャッシュしない: https://caniuse.com/?search=stale-while-revalidate
+  // SwR=10min: 滞在しているセッションの中ではキャッシュを使う
+  // stale-if-error=1day: エラーが発生した場合は1日間はキャッシュを使う
+  return {
+    "Cache-Control":
+      "max-age=1, s-maxage=60, stale-while-revalidate=600 stale-if-error=86400",
   };
 };
 

@@ -1,6 +1,10 @@
 import PageTitle from "~/components/page-title";
 import TalkCard from "~/components/talk-card";
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
+import type {
+  HeadersFunction,
+  LoaderArgs,
+  V2_MetaFunction,
+} from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import TallyIcon from "~/components/tally-icon";
 import { createNewtClient } from "~/utils/newt.server";
@@ -38,6 +42,16 @@ export const loader = async ({ context }: LoaderArgs) => {
 
   return {
     talks,
+  };
+};
+
+export const headers: HeadersFunction = () => {
+  // max-age=1sec: Stale-while-revalidateが無効なブラウザではキャッシュしない: https://caniuse.com/?search=stale-while-revalidate
+  // SwR=10min: 滞在しているセッションの中ではキャッシュを使う
+  // stale-if-error=1day: エラーが発生した場合は1日間はキャッシュを使う
+  return {
+    "Cache-Control":
+      "max-age=1, s-maxage=60, stale-while-revalidate=600 stale-if-error=86400",
   };
 };
 

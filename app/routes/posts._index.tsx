@@ -1,5 +1,9 @@
 import ArticleCard from "~/components/article-card";
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
+import type {
+  HeadersFunction,
+  LoaderArgs,
+  V2_MetaFunction,
+} from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Braces, Lightbulb, Sprout, CircleIcon } from "lucide-react";
@@ -26,6 +30,16 @@ export const meta: V2_MetaFunction = () => {
     { property: "twitter:card", content: "summary_large_image" },
     { property: "twitter:site", content: "@ikumatdkr" },
   ];
+};
+
+export const headers: HeadersFunction = () => {
+  // max-age=1sec: Stale-while-revalidateが無効なブラウザではキャッシュしない: https://caniuse.com/?search=stale-while-revalidate
+  // SwR=10min: 滞在しているセッションの中ではキャッシュを使う
+  // stale-if-error=1day: エラーが発生した場合は1日間はキャッシュを使う
+  return {
+    "Cache-Control":
+      "max-age=1, s-maxage=60, stale-while-revalidate=600 stale-if-error=86400",
+  };
 };
 
 export const loader = async ({ context }: LoaderArgs) => {

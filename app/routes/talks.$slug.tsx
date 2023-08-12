@@ -1,4 +1,5 @@
 import type {
+  HeadersFunction,
   LoaderArgs,
   V2_MetaArgs,
   V2_MetaFunction,
@@ -20,6 +21,16 @@ export const loader = async ({ context, params }: LoaderArgs) => {
   const talk = await getTalkById(client, params.slug);
   return {
     talk,
+  };
+};
+
+export const headers: HeadersFunction = () => {
+  // max-age=1sec: Stale-while-revalidateが無効なブラウザではキャッシュしない: https://caniuse.com/?search=stale-while-revalidate
+  // SwR=10min: 滞在しているセッションの中ではキャッシュを使う
+  // stale-if-error=1day: エラーが発生した場合は1日間はキャッシュを使う
+  return {
+    "Cache-Control":
+      "max-age=1, s-maxage=60, stale-while-revalidate=600 stale-if-error=86400",
   };
 };
 
