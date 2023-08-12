@@ -1,7 +1,7 @@
 import type { Content } from "newt-client-js";
 import { createFetchSettings, type NewtClient } from "~/utils/newt.server";
 
-interface Information extends Content {
+export interface Information extends Content {
   title: string;
   body: string;
   publishedAt: string;
