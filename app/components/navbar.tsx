@@ -104,8 +104,11 @@ const Navigation = () => {
         </NavigationMenuList>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <Link to="/posts">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              asChild
+            >
+              <Link to="/posts">
                 <Tooltip>
                   <TooltipTrigger>
                     <div className="flex flex-row gap-2">
@@ -117,12 +120,15 @@ const Navigation = () => {
                     <p>ブログです！</p>
                   </TooltipContent>
                 </Tooltip>
-              </NavigationMenuLink>
-            </Link>
+              </Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link to="/talks">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              asChild
+            >
+              <Link to="/talks">
                 <Tooltip>
                   <TooltipTrigger>
                     <div className="flex flex-row gap-2">
@@ -134,8 +140,8 @@ const Navigation = () => {
                     <p>登壇資料です！</p>
                   </TooltipContent>
                 </Tooltip>
-              </NavigationMenuLink>
-            </Link>
+              </Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

@@ -38,12 +38,12 @@ export const SelfIntroduction = () => {
               <AvatarImage src="/ikuma.png" />
               <AvatarFallback>ikuma-t</AvatarFallback>
             </Avatar>
-            <h2 className="flex md:items-center flex-col md:flex-row gap-x-3 gap-y-1">
+            <p className="flex md:items-center flex-col md:flex-row gap-x-3 gap-y-1">
               ikuma-t
               <span className="text-zinc-400 text-xs sm:text-sm font-medium">
                 いくまてぃー | いくま
               </span>
-            </h2>
+            </p>
           </CardTitle>
           <CollapsibleTrigger asChild>
             <Button variant="outline">
