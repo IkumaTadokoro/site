@@ -34,6 +34,16 @@ export const loader = async ({ context }: LoaderArgs) => {
   } = context;
   const client = createNewtClient({ spaceUid, token });
   const posts = await getPosts(client, {
+    select: [
+      "_id",
+      "title",
+      "body",
+      "slug",
+      "emoji",
+      "category",
+      "publishedAt",
+      "updatedAt",
+    ],
     body: { fmt: "text" },
     order: ["-publishedAt"],
   });

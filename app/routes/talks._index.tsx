@@ -31,7 +31,7 @@ export const loader = async ({ context }: LoaderArgs) => {
   const client = createNewtClient({ spaceUid, token });
 
   const talks = await getTalks(client, {
-    select: ["_id", "title", "body", "ogp", "eventName", "eventDate"],
+    select: ["_id", "title", "body", "ogp.src", "eventName", "eventDate"],
     order: ["-eventDate"],
     body: { fmt: "text" },
   });
