@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { ChevronsUpDown, Link2, ExternalLink, Table } from "lucide-react";
+import { ChevronsUpDown, Link2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Icons } from "~/components/icons";
 import { TypographyMuted } from "~/components/typography";
@@ -18,6 +18,7 @@ import {
   CollapsibleContent,
 } from "~/components/ui/collapsible";
 import {
+  Table,
   TableCaption,
   TableHeader,
   TableRow,
@@ -35,12 +36,12 @@ export const SelfIntroduction = () => {
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle className="flex items-center gap-x-2">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="/ikuma.png" />
+              <AvatarImage src="/ikuma.png" alt="ikumaのアイコン" />
               <AvatarFallback>ikuma-t</AvatarFallback>
             </Avatar>
             <p className="flex md:items-center flex-col md:flex-row gap-x-3 gap-y-1">
               ikuma-t
-              <span className="text-zinc-400 text-xs sm:text-sm font-medium">
+              <span className="text-zinc-500 text-xs sm:text-sm font-medium">
                 いくまてぃー | いくま
               </span>
             </p>
@@ -75,6 +76,8 @@ export const SelfIntroduction = () => {
                 to="https://twitter.com/ikumatdkr"
                 target="_blank"
                 className="border-b flex gap-2 items-center hover:border-zinc-800 hover:opacity-70"
+                title="Twitter | X"
+                aria-label="Twitter | X"
               >
                 <Icons.twitter className="h-5 w-5" />
                 <Icons.x className="h-4 w-4" />
