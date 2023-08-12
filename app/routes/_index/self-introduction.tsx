@@ -76,6 +76,8 @@ export const SelfIntroduction = () => {
                 to="https://twitter.com/ikumatdkr"
                 target="_blank"
                 className="border-b flex gap-2 items-center hover:border-zinc-800 hover:opacity-70"
+                title="Twitter | X"
+                aria-label="Twitter | X"
               >
                 <Icons.twitter className="h-5 w-5" />
                 <Icons.x className="h-4 w-4" />
