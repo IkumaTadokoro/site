@@ -13,9 +13,6 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import CategoryBadge from "~/components/category-badge";
 import Time from "~/components/time";
-import { createClient } from "newt-client-js";
-import type { Content } from "newt-client-js";
-import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import type { HTMLReactParserOptions } from "html-react-parser";
 import parse, { domToReact, Element } from "html-react-parser";
@@ -27,69 +24,42 @@ import {
 } from "@radix-ui/react-collapsible";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
-
-interface Post extends Content {
-  title: string;
-  slug: string;
-  body: string;
-  category: "tech" | "life" | "idea";
-  publishedAt: string;
-  updatedAt: string;
-}
+import { createNewtClient } from "~/utils/newt.server";
+import { getPost, getPostBySlug } from "~/models/post.server";
 
 export const loader = async ({ context, params }: LoaderArgs) => {
-  const client = createClient({
-    spaceUid: context.env.NEWT_SPACE_UID,
-    token: context.env.NEWT_CDN_API_TOKEN,
-    apiType: "cdn",
-    adapter: fetchAdapter,
+  const {
+    env: { NEWT_CDN_API_TOKEN: token, NEWT_SPACE_UID: spaceUid },
+  } = context;
+  const client = createNewtClient({ spaceUid, token });
+
+  const post = await getPostBySlug(client, params.slug);
+  console.log(post);
+
+  const nextSibling = await getPost(client, {
+    and: [
+      {
+        publishedAt: {
+          gt: post!.publishedAt,
+        },
+      },
+    ],
+    order: ["publishedAt"],
   });
 
-  const post = (await client.getFirstContent<Post>({
-    appUid: context.env.NEWT_APP_UID,
-    modelUid: "post",
-    query: {
-      and: [
-        {
-          slug: {
-            match: params.slug,
-          },
+  const prevSibling = await getPost(client, {
+    and: [
+      {
+        publishedAt: {
+          lt: post!.publishedAt,
         },
-      ],
-    },
-  })) as Post;
-
-  const nextSibling = await client.getFirstContent<Post>({
-    appUid: context.env.NEWT_APP_UID,
-    modelUid: "post",
-    query: {
-      and: [
-        {
-          publishedAt: {
-            gt: post!.publishedAt,
-          },
-        },
-      ],
-      order: ["publishedAt"],
-    },
-  });
-  const prevSibling = await client.getFirstContent<Post>({
-    appUid: context.env.NEWT_APP_UID,
-    modelUid: "post",
-    query: {
-      and: [
-        {
-          publishedAt: {
-            lt: post!.publishedAt,
-          },
-        },
-      ],
-      order: ["-publishedAt"],
-    },
+      },
+    ],
+    order: ["-publishedAt"],
   });
 
   return {
-    content: post,
+    post,
     siblings: {
       prev: prevSibling,
       next: nextSibling,
@@ -102,10 +72,10 @@ export const meta: V2_MetaFunction<Awaited<ReturnType<typeof loader>>> = ({
   data,
 }: V2_MetaArgs) => {
   const url = new URL(location.pathname, "https://ikuma-t.com");
-  const title = data.content.title;
+  const title = data.post.title;
   const htmlExpr = /<("[^"]*"|'[^']*'|[^'">])*>/g;
   const description =
-    data.content.body.replace(htmlExpr, "").slice(0, 117) + "...";
+    data.post.body.replace(htmlExpr, "").slice(0, 117) + "...";
 
   return [
     { title },
@@ -137,9 +107,13 @@ const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
 
 export default function PostSlug() {
   const {
-    content,
+    post,
     siblings: { next, prev },
   } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  if (!post) {
+    return null;
+  }
+
   const tableOfContents: { level: number; title: string; href: string }[] = [];
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
@@ -178,16 +152,16 @@ export default function PostSlug() {
       }
     },
   };
-  const body = parse(content.body, options);
+  const body = parse(post.body, options);
 
   return (
     <div className="grid gap-x-8 gap-y-4">
       <section className="grid gap-2 px-1 py-4">
-        <CategoryBadge category={content.category} />
-        <TypographyH2>{content.title}</TypographyH2>
+        <CategoryBadge category={post.category} />
+        <TypographyH2>{post.title}</TypographyH2>
         <div className="flex space-x-4 text-xs text-muted-foreground">
-          <Time timeString={content.publishedAt} type="createdAt" />
-          <Time timeString={content.updatedAt} type="updatedAt" />
+          <Time timeString={post.publishedAt} type="createdAt" />
+          <Time timeString={post.updatedAt} type="updatedAt" />
         </div>
         <div className="mt-4">
           <TableOfContent tableOfContents={tableOfContents} />

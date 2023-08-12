@@ -40,9 +40,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { createClient } from "newt-client-js";
-import type { Content } from "newt-client-js";
-import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 import { Badge } from "~/components/ui/badge";
 import Time from "~/components/time";
 import {
@@ -52,6 +49,13 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion";
 import parse from "html-react-parser";
+import { createNewtClient } from "~/utils/newt.server";
+import {
+  getLatestInformation,
+  getPinnedInformation,
+} from "~/models/information.server";
+import { getLatestTalks } from "~/models/talk.server";
+import { getLatestPosts } from "~/models/post.server";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -70,99 +74,16 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-interface Post extends Content {
-  title: string;
-  slug: string;
-  body: string;
-  emoji: {
-    type: "emoji";
-    value: string;
-  };
-  category: "tech" | "life" | "idea";
-  publishedAt: string;
-  updatedAt: string;
-}
-
-interface Information extends Content {
-  title: string;
-  body: string;
-  publishedAt: string;
-  pinned: boolean;
-}
-
-interface Talk extends Content {
-  title: string;
-  body: string;
-  ogp: {
-    _id: string;
-    altText: string;
-    description: string;
-    fileName: string;
-    fileSize: number;
-    width: number;
-    height: number;
-    title: string;
-    fileType: string;
-    src: string;
-  };
-  slideUrl: {
-    html: string;
-    url: string;
-  };
-  eventUrl: {
-    html: string;
-    url: string;
-  };
-  eventDate: string;
-}
-
 export const loader = async ({ context }: LoaderArgs) => {
-  const client = createClient({
-    spaceUid: context.env.NEWT_SPACE_UID,
-    token: context.env.NEWT_CDN_API_TOKEN,
-    apiType: "cdn",
-    adapter: fetchAdapter,
-  });
+  const {
+    env: { NEWT_CDN_API_TOKEN: token, NEWT_SPACE_UID: spaceUid },
+  } = context;
+  const client = createNewtClient({ spaceUid, token });
 
-  const latestTalk = await client.getFirstContent<Talk>({
-    appUid: "ikuma-t",
-    modelUid: "talk",
-    query: {
-      select: ["_id", "title", "body", "ogp", "eventDate"],
-      order: ["-eventDate"],
-      body: { fmt: "text" },
-    },
-  });
-
-  const latestPost = await client.getFirstContent<Post>({
-    appUid: "ikuma-t",
-    modelUid: "post",
-    query: {
-      select: ["slug", "title", "body", "emoji"],
-      order: ["-publishedAt"],
-      body: { fmt: "text" },
-    },
-  });
-
-  const latestInformation = await client.getContents<Information>({
-    appUid: "ikuma-t",
-    modelUid: "information",
-    query: {
-      select: ["_id", "title", "body", "publishedAt"],
-      limit: 3,
-      order: ["-publishedAt"],
-    },
-  });
-
-  const pinnedInformation = await client.getFirstContent<Information>({
-    appUid: "ikuma-t",
-    modelUid: "information",
-    query: {
-      select: ["_id", "title", "body", "publishedAt"],
-      and: [{ pinned: true }],
-      order: ["-publishedAt"],
-    },
-  });
+  const latestTalk = await getLatestTalks(client);
+  const latestPost = await getLatestPosts(client);
+  const latestInformation = await getLatestInformation(client);
+  const pinnedInformation = await getPinnedInformation(client);
 
   return { latestPost, latestTalk, latestInformation, pinnedInformation };
 };
