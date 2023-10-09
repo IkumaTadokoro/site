@@ -27,7 +27,7 @@ export const meta: V2_MetaFunction = () => {
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://ikuma-t.com/posts" },
     { property: "og:image", content: "https://ikuma-t.com/ogp.png" },
-    { property: "twitter:card", content: "summary_large_image" },
+    { property: "twitter:card", content: "summary" },
     { property: "twitter:site", content: "@ikumatdkr" },
   ];
 };
