@@ -28,6 +28,7 @@
     "@vespaiach/axios-fetch-adapter": "^0.3.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "highlight.js": "^11.9.0",
     "html-react-parser": "^4.2.0",
     "isbot": "^3.6.8",
     "lucide-react": "^0.263.1",

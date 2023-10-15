@@ -15,6 +15,7 @@ import CategoryBadge from "~/components/category-badge";
 import Time from "~/components/time";
 import type {
   HeadersFunction,
+  LinksFunction,
   LoaderArgs,
   V2_MetaFunction,
 } from "@remix-run/cloudflare";
@@ -30,6 +31,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 import { createNewtClient } from "~/utils/newt.server";
 import { getPost, getPostBySlug } from "~/models/post.server";
+import hljs from 'highlight.js'
+import styles from 'highlight.js/styles/github-dark.css';
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader = async ({ context, params }: LoaderArgs) => {
   const {
@@ -161,6 +166,16 @@ export default function PostSlug() {
               </div>
             );
           }
+          if(domNode.name === 'code' && domNode.children[0].nodeType === Node.TEXT_NODE) {
+            const textNode = domNode.children[0];
+            const result = hljs.highlightAuto(textNode.data);
+            const dom = parse(result.value);    
+            return (
+              <code className='hljs rounded mx-1'>
+                {dom}
+              </code>
+            )
+          }
         }
       }
     },
@@ -179,7 +194,7 @@ export default function PostSlug() {
         <div className="mt-4">
           <TableOfContent tableOfContents={tableOfContents} />
         </div>
-        <article className="prose md:prose-base prose-sm prose-a:break-words mt-8 px-1 overflow-hidden">
+        <article className="prose md:prose-base prose-sm prose-a:break-words mt-8 px-1 overflow-hidden prose-pre:bg-[#0d1117]">
           {body}
         </article>
       </section>
