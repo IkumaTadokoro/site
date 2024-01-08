@@ -166,7 +166,7 @@ export default function PostSlug() {
               </div>
             );
           }
-          if(domNode.name === 'code' && domNode.children[0].nodeType === Node.TEXT_NODE) {
+          if(domNode.name === 'code' && domNode.children[0].nodeType === 3) {
             const textNode = domNode.children[0];
             const result = hljs.highlightAuto(textNode.data);
             const dom = parse(result.value);    
